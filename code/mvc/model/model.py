@@ -26,3 +26,62 @@ class Model:
     
     def close_db(self):
           self.cnx.close()
+    
+    """
+    ************************************
+    *        Metodos para salas        *
+    ************************************
+    """
+
+    def crear_sala(self, s_num_asientos, s_tipo):
+        try:
+            sql = 'INSERT INTO salas (`s_num_asientos`, `s_tipo`) VALUES (%s, %s)'
+            vals = (s_num_asientos, s_tipo)
+            self.cursor.execute(sql, vals)
+            self.cnx.commit()
+            id_sala = self.cursor.lastrowid
+            return id_sala
+        except connector.Error as err:
+            self.cnx.rollback()
+            return(err)
+    
+    def leer_una_sala(self, id_sala):
+        try:
+            sql = 'SELECT * FROM salas WHERE id_sala = %s'
+            vals = (id_sala,)
+            self.cursor.execute(sql, vals)
+            record = self.cursor.fetchone()
+            return record
+        except connector.Error as err:
+            return(err)   
+    
+    def leer_todas_salas(self):
+        try:
+            sql = 'SELECT * FROM salas'
+            self.cursor.execute(sql)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return(err) 
+    
+    def actualizar_sala(self, fields, vals):
+        try:
+            sql = 'UPDATE salas SET ' + ','.join(fields)+'WHERE id_sala = %s'
+            self.cursor.execute(sql, vals)
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            self.cnx.rollback()
+            return(err) 
+    
+    def eliminar_sala(self, id_sala):
+        try:
+            sql = 'DELETE FROM salas WHERE id_sala = %s'
+            vals = (id_sala,)
+            self.cursor.execute(sql,vals)
+            self.cnx.commit()
+            count = self.cursor.rowcount
+            return count
+        except connector.Error as err:
+            self.cnx.rollback()
+            return(err)
