@@ -85,3 +85,56 @@ class Model:
         except connector.Error as err:
             self.cnx.rollback()
             return(err)
+
+    def crear_usuario(self, u_pnombre, u_apellido, u_email, u_password, u_admi):
+        try:
+            sql = 'INSERT INTO usuarios (`u_pnombre`, `u_apellido`, `u_email`, `u_password`, `u_admin`) VALUES (%s, %s, %s, %s, %s)'
+            vals = (u_pnombre, u_apellido, u_email, u_password, u_admi)
+            self.cursor.execute(sql, vals)
+            self.cnx.commit()
+            id_sala = self.cursor.lastrowid
+            return id_sala
+        except connector.Error as err:
+            self.cnx.rollback()
+            return(err)
+    
+    def leer_un_usuario(self, id_usuario):
+        try:
+            sql = 'SELECT * FROM usuarios WHERE id_usuario = %s'
+            vals = (id_usuario,)
+            self.cursor.execute(sql, vals)
+            record = self.cursor.fetchone()
+            return record
+        except connector.Error as err:
+            return(err)   
+    
+    def leer_todos_usuarios(self):
+        try:
+            sql = 'SELECT * FROM usuarios'
+            self.cursor.execute(sql)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return(err)
+
+    def actualizar_usuario(self, fields, vals):
+        try:
+            sql = 'UPDATE usuarios SET ' + ','.join(fields)+'WHERE id_usuario = %s'
+            self.cursor.execute(sql, vals)
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            self.cnx.rollback()
+            return(err)
+
+    def eliminar_usuario(self, id_usuario):
+        try:
+            sql = 'DELETE FROM usuarios WHERE id_usuario = %s'
+            vals = (id_usuario,)
+            self.cursor.execute(sql,vals)
+            self.cnx.commit()
+            count = self.cursor.rowcount
+            return count
+        except connector.Error as err:
+            self.cnx.rollback()
+            return(err)

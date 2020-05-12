@@ -20,11 +20,12 @@ class View:
         print('* -- Menu principal --  *')
         print('*************************')
         print('1. Salas')
-        print('2. Comprar Boletos')          
-        print('3. Funciones')
-        print('4. Peliculas')
-        print('5. Registrarse')
-        print('6. Salir')
+        print('2. Peliculas')          
+        print('3. Usuarios')
+        print('4. Funciones')
+        print('5. Comprar Boletos')
+        print('6. Registrarse')
+        print('7. Salir')
 
      
     def option(self, last):
@@ -49,6 +50,9 @@ class View:
         print('- '+err+' -')
         print('-'*(len(err)+4))
     
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     def salas_menu(self):
         print('*************************')
         print('* -- Submenu Salas  --  *')
@@ -59,7 +63,7 @@ class View:
         print('4. Actualizar sala')
         print('5. Borrar sala')
         print('6. Regresar')
-    
+
     def mostrar_sala(self, record):
         print(f'{record[0]:<6}|{record[1]:<25}|{record[2]:<25}|{record[3]:<35}')
      
@@ -73,3 +77,33 @@ class View:
      
     def mostrar_sala_footer(self):
         print('*'*94)
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    def usuarios_menu(self):
+        print('*************************')
+        print('* -- Submenu Usuarios  --  *')
+        print('*************************')
+        print('1. Agregar usuario')
+        print('2. Mostrar usuario')          
+        print('3. Mostrar todos las usuarios')
+        print('4. Actualizar usuario')
+        print('5. Borrar usuario')
+        print('6. Regresar')
+    
+    def mostrar_usuario(self, record):
+        print('ID:', record[0])
+        print('Nombre:', record[1])
+        print('Apellido:', record[2])
+        print('email:', record[3])
+        print('admin:', record[5])
+    
+    def mostrar_usuario_header(self, header):
+          print(header.center(48,'*'))
+          print('-'*48)
+
+    def mostrar_usuario_midder(self):
+        print('-'*48)
+    
+    def mostrar_usuario_footer(self):
+        print('*'*48)

@@ -21,10 +21,21 @@ class Controller:
     *  Controladores generales          *
     ************************************
     """
+    def inicio_menu(self):
+        o = '0'
+        while o != '2':
+            self.view.main_menu()
+            self.view.option('6')
+            o = input()
+            if o == '1':
+                self.salas_menu()
+            else:
+                self.view.not_valid_option()
+        return
 
     def main_menu(self):
         o = '0'
-        while o != '6':
+        while o != '7':
             self.view.main_menu()
             self.view.option('6')
             o = input()
@@ -39,6 +50,8 @@ class Controller:
             elif o == '5':
                 self.venta_boletos()
             elif o == '6':
+                self.view.end()
+            elif o == '7':
                 self.view.end()
             else:
                 self.view.not_valid_option()
@@ -58,7 +71,9 @@ class Controller:
     *  Controlador para salar          *
     ************************************
     """
-
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     def salas_menu(self):
         o = '0'
         while o != '6':
@@ -168,18 +183,123 @@ class Controller:
                 self.view.error('PROBLEMA AL BORRAR LA SALA. REVISA.')
         return
 
-
-
-
-
-
-
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
     def peliculas_menu(self):
         pass
-
     def usuarios_menu(self):
-        pass
+        o = '0'
+        while o != '6':
+            self.view.usuarios_menu()
+            self.view.option('6')
+            o = input()
+            if o == '1':
+                self.crear_usuario()
+            elif o == '2':
+                self.leer_un_usuario()
+            elif o == '3':
+                self.leer_todos_usuarios()
+            elif o == '4':
+                self.actualzar_usuario()
+            elif o == '5':
+                self.eliminar_usuario()
+            elif o == '6':
+                return
+            else:
+                self.view.not_valid_option()
+        return
+    
+    def ask_usuario(self):
+        self.view.ask('Nombre: ')
+        nombre = input ()
+        self.view.ask('Apellido: ')
+        apellido = input ()
+        self.view.ask('email: ')
+        email = input ()
+        self.view.ask('Password: ')
+        password = input()
+        return [nombre, apellido, email, password]
+
+    def crear_usuario(self):
+        nombre, apellido, email, password = self.ask_usuario()
+        admin = False
+        id_usuario = self.model.crear_usuario(nombre, apellido, email, password, admin)
+        if type(id_usuario) == int:
+            self.view.ok(id_usuario, 'agrego')
+        else:
+            self.view.error('NO SE PUDO AGREGAR EL USUARIO. REVISA.')
+        return
+
+
+    def leer_un_usuario(self):
+        self.view.ask('ID usuario: ')
+        id_usuario = input()
+        usuario = self.model.leer_un_usuario(id_usuario)
+        if type(usuario) == tuple:
+            self.view.mostrar_usuario_header('Datos del usuario'+id_usuario+' ')
+            self.view.mostrar_usuario(usuario)
+            self.view.mostrar_usuario_midder()
+            self.view.mostrar_usuario_footer()
+        else:
+            if usuario == None:
+                self.view.error('EL USUARIO NO EXISTE')
+            else: 
+                self.view.error('PROBLEMA AL LEER EL USUARIO. REVISA.')
+        return
+
+    def leer_todos_usuarios(self):
+        usuarios = self.model.leer_todos_usuarios()
+        if type(usuarios) == list:
+            self.view.mostrar_usuario_header(' Datos de todos los usuarios ')
+            for usuario in usuarios:
+                self.view.mostrar_usuario(usuario)
+                self.view.mostrar_usuario_midder()
+            self.view.mostrar_usuario_footer()
+        else:
+            self.view.error('PROBLEMA AL LEER EL USUARIO. REVISA.')
+        return
+    
+    def actualzar_usuario(self):
+        self.view.ask('ID usuario: ')
+        id_usuario = input()
+        usuario = self.model.leer_un_usuario(id_usuario)
+        if type(usuario) == tuple:
+            self.view.mostrar_usuario_header('Datos del usuario'+id_usuario+' ')
+            self.view.mostrar_usuario(usuario)
+            self.view.mostrar_usuario_midder()
+            self.view.mostrar_usuario_footer()
+        else:
+            if usuario == None:
+                self.view.error('EL USUARIO NO EXISTE')
+            else: 
+                self.view.error('PROBLEMA AL LEER EL USUARIO. REVISA.')
+            return
+        self.view.msg('Ingresa los valores a modificar (vacio para dejarlo igual): ')
+        whole_vals = self.ask_usuario()
+        fields, vals = self.update_lists(['u_pnombre','u_apellido','u_email','u_password','u_admin'], whole_vals)
+        vals.append(id_usuario)
+        vals = tuple(vals)
+        out = self.model.actualizar_usuario(fields, vals)
+        if out == True:
+             self.view.ok(id_usuario, 'actualizo')
+        else:
+             self.view.error('NO SE PUDO ACTUALIZAR EL USUARIO. REVISA.')
+        return
+
+    def eliminar_usuario(self):
+        self.view.ask('ID usuario: ')
+        id_usuario = input()
+        count = self.model.eliminar_usuario(id_usuario)
+        if count != 0:
+               self.view.ok(id_usuario, 'borro')
+        else: 
+            if count == 0:
+                self.view.error('EL USUARIO NO EXISTE')
+            else:
+                self.view.error('PROBLEMA AL BORRAR EL USUARIO. REVISA.')
+        return
 
     def funciones_menu(self):
         pass
