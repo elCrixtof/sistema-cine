@@ -82,15 +82,17 @@ class Controller:
         return
     
     def ask_sala(self):
-        self.view.ask('Asientos: ')
+        self.view.ask('Asientos por fila: ')
         asientos = input()
+        self.view.ask('Numero de filas: ')
+        filas = input()
         self.view.ask('Tipo: ')
         tipo = input()
-        return [asientos, tipo]
+        return [asientos, filas, tipo]
     
     def crear_sala(self):
-        asientos, tipo = self.ask_sala()
-        id_sala = self.model.crear_sala(asientos, tipo)
+        asientos, filas, tipo = self.ask_sala()
+        id_sala = self.model.crear_sala(asientos, filas, tipo)
         if type(id_sala) == int:
             self.view.ok(id_sala, 'agrego')
         else:
@@ -142,7 +144,7 @@ class Controller:
             return
         self.view.msg('Ingresa los valores a modificar (vacio para dejarlo igual): ')
         whole_vals = self.ask_sala()
-        fields, vals = self.update_lists(['s_num_asientos','s_tipo'], whole_vals)
+        fields, vals = self.update_lists(['s_num_filas', 's_num_asientosf','s_tipo'], whole_vals)
         vals.append(id_sala)
         vals = tuple(vals)
         out = self.model.actualizar_sala(fields, vals)

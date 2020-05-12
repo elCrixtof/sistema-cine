@@ -61,15 +61,15 @@ class View:
         print('6. Regresar')
     
     def mostrar_sala(self, record):
-        print(f'{record[0]:<6}|{record[1]:<25}|{record[2]:<35}')
+        print(f'{record[0]:<6}|{record[1]:<25}|{record[2]:<25}|{record[3]:<35}')
      
     def mostrar_sala_header(self, header):
-        print(header.center(68,'*'))
-        print('ID'.ljust(6)+'|'+'Num. Asientos'.ljust(25)+'|'+'Tipo de sala'.ljust(35))
-        print('-'*68)
+        print(header.center(94,'*'))
+        print('ID'.ljust(6)+'|'+'Num. Asientos por fila'.ljust(25)+'|'+'Num. filas'.ljust(25)+'|'+'Tipo de sala'.ljust(35))
+        print('-'*94)
 
     def mostrar_sala_midder(self):
-        print('-'*68)
+        print('-'*94)
      
     def mostrar_sala_footer(self):
-        print('*'*68)
+        print('*'*94)

@@ -33,10 +33,10 @@ class Model:
     ************************************
     """
 
-    def crear_sala(self, s_num_asientos, s_tipo):
+    def crear_sala(self, s_num_filas, s_num_asientosf, s_tipo):
         try:
-            sql = 'INSERT INTO salas (`s_num_asientos`, `s_tipo`) VALUES (%s, %s)'
-            vals = (s_num_asientos, s_tipo)
+            sql = 'INSERT INTO salas (`s_num_filas`,`s_num_asientosf`, `s_tipo`) VALUES (%s, %s, %s)'
+            vals = (s_num_filas, s_num_asientosf, s_tipo)
             self.cursor.execute(sql, vals)
             self.cnx.commit()
             id_sala = self.cursor.lastrowid
