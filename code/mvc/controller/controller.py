@@ -14,7 +14,7 @@ class Controller:
      
     def start(self):
         self.view.start()
-        self.main_menu()
+        self.inicio_menu()
     
     """
     ************************************
@@ -23,21 +23,26 @@ class Controller:
     """
     def inicio_menu(self):
         o = '0'
-        while o != '2':
-            self.view.main_menu()
-            self.view.option('6')
+        while o != '3':
+            self.view.inicio_menu()
+            self.view.option('3')
             o = input()
             if o == '1':
-                self.salas_menu()
+                self.inicio_sesion()
+            elif o == '2':
+                self.registro_menu()
+            elif o == '3':
+                self.view.end()
             else:
                 self.view.not_valid_option()
         return
-
-    def main_menu(self):
+    
+    
+    def main_menu_admin(self):
         o = '0'
         while o != '7':
             self.view.main_menu()
-            self.view.option('6')
+            self.view.option('7')
             o = input()
             if o == '1':
                 self.salas_menu()
@@ -57,6 +62,25 @@ class Controller:
                 self.view.not_valid_option()
         return
     
+    
+    def main_menu_usuario(self):
+        o = '0'
+        while o != '3':
+            self.view.main2_menu()
+            self.view.option('3')
+            o = input()
+            if o == '1':
+                # self.inicio_sesion()
+                print('prueba')
+            elif o == '2':
+                # self.registro_menu()
+                print('prueba')
+            elif o == '3':
+                self.view.end()
+            else:
+                self.view.not_valid_option()
+        return
+
     def update_lists(self, fs, vs):
         fields = []
         vals = []
@@ -65,6 +89,47 @@ class Controller:
                 fields.append(f+' = %s')
                 vals.append(v)
         return fields, vals
+    
+    """
+    ************************************
+    *  Inicio sesion  y registro       *
+    ************************************
+    """
+
+    def ask_inicio(self):
+        self.view.ask('Email: ')
+        email = input()
+        self.view.ask('Password: ')
+        password = input()
+        return [email, password]
+
+    def inicio_sesion(self):
+        email, password = self.ask_inicio()
+        usuario = self.model.leer_usuario_email_password(email, password)
+        if type(usuario) == tuple:
+            self.view.mostrar_usuario_header('Datos de tu usuario')
+            self.view.mostrar_usuario(usuario)
+            self.view.mostrar_usuario_midder()
+            self.view.mostrar_usuario_footer()
+        else:
+            if usuario == None:
+                self.view.error('El EMAIL O EL PASSWORD SON INCORRECTOS')
+            else: 
+                self.view.error('PROBLEMA AL LEER EL USUARIO. REVISA.')
+            return
+        if usuario[5] == True:
+            self.main_menu_admin()
+        else:
+            self.main_menu_usuario()
+
+    def registro_menu(self):
+        pass
+
+
+
+
+
+
     
     """
     ************************************
@@ -103,11 +168,11 @@ class Controller:
         filas = input()
         self.view.ask('Tipo: ')
         tipo = input()
-        return [asientos, filas, tipo]
+        return [filas, asientos, tipo]
     
     def crear_sala(self):
         asientos, filas, tipo = self.ask_sala()
-        id_sala = self.model.crear_sala(asientos, filas, tipo)
+        id_sala = self.model.crear_sala(filas, asientos, tipo)
         if type(id_sala) == int:
             self.view.ok(id_sala, 'agrego')
         else:

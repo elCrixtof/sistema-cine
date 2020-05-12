@@ -138,3 +138,16 @@ class Model:
         except connector.Error as err:
             self.cnx.rollback()
             return(err)
+
+    def leer_usuario_email_password(self, u_email, u_password):
+        try:
+            sql = 'SELECT * FROM usuarios WHERE u_email = %s and u_password = %s'
+            vals = (u_email, u_password)
+            self.cursor.execute(sql, vals)
+            record = self.cursor.fetchone()
+            return record
+        except connector.Error as err:
+            return(err)
+
+
+

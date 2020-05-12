@@ -14,11 +14,19 @@ class View:
         print('=========================')
         print('= Hasta la vista, baby  =')
         print('=========================')
-        
-    def main_menu(self):
+
+    def inicio_menu(self):
         print('*************************')
         print('* -- Menu principal --  *')
         print('*************************')
+        print('1. Inicio de sesion')
+        print('2. Registrarse')
+        print('3. Salir')
+
+    def main_menu(self):
+        print('*****************************')
+        print('* -- Menu Administrador --  *')
+        print('*****************************')
         print('1. Salas')
         print('2. Peliculas')          
         print('3. Usuarios')
@@ -27,7 +35,14 @@ class View:
         print('6. Registrarse')
         print('7. Salir')
 
-     
+    def main2_menu(self):
+        print('*************************')
+        print('* -- Menu Usuario --  *')
+        print('*************************')
+        print('1. Prueba')
+        print('2. Prueba')
+        print('3. Salir') 
+
     def option(self, last):
         print('Selecciona una opcion (1-'+last+'): ', end = '')
      
