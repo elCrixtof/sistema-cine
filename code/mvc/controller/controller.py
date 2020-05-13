@@ -253,7 +253,117 @@ class Controller:
     # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
     def peliculas_menu(self):
-        pass
+        o = '0'
+        while o != '6':
+            self.view.peliculas_menu()
+            self.view.option('6')
+            o = input()
+            if o == '1':
+                self.crear_pelicula()
+            elif o == '2':
+                self.leer_una_pelicula()
+            elif o == '3':
+                self.leer_todas_peliculas()
+            elif o == '4':
+                self.actualzar_pelicula()
+            elif o == '5':
+                self.eliminar_pelicula()
+            elif o == '6':
+                return
+            else:
+                self.view.not_valid_option()
+        return
+
+    def ask_pelicula(self):
+        self.view.ask('Titulo: ')
+        titulo = input()
+        self.view.ask('Genero: ')
+        genero = input ()
+        self.view.ask('Descripcion: ')
+        descripcion = input()
+        return [titulo, genero, descripcion]
+
+    def crear_pelicula(self):
+        titulo, genero, descripcion = self.ask_pelicula()
+        id_pelicula = self.model.crear_pelicula(titulo, genero, descripcion)
+        if type(id_pelicula) == int:
+            self.view.ok(id_pelicula, 'se agrego')
+        else:
+            self.view.error('NO SE PUDO AGREGAR LA PELICULA. REVISA.')
+        return
+
+    def leer_una_pelicula(self):
+        self.view.ask('ID pelicula: ')
+        id_pelicula = input()
+        pelicula = self.model.leer_una_pelicula(id_pelicula)
+        if type(pelicula) == tuple:
+            self.view.mostrar_pelicula_header('Datos de la pelicula'+id_pelicula+' ')
+            self.view.mostrar_pelicula(pelicula)
+            self.view.mostrar_pelicula_midder()
+            self.view.mostrar_pelicula_footer()
+        else:
+            if pelicula == None:
+                self.view.error('LA PELICULA NO EXISTE')
+            else: 
+                self.view.error('PROBLEMA AL LEER LA PELICULA. REVISA.')
+        return    
+
+    def leer_todas_peliculas(self):
+        peliculas = self.model.leer_todas_peliculas()
+        if type(peliculas) == list:
+            self.view.mostrar_pelicula_header(' Datos de todas las peliculas ')
+            for pelicula in peliculas:
+                self.view.mostrar_pelicula(pelicula)
+                self.view.mostrar_pelicula_midder()
+            self.view.mostrar_pelicula_footer()
+        else:
+            self.view.error('PROBLEMA AL LEER LAS PELICULAS. REVISA.')
+        return
+
+    def actualzar_pelicula(self):
+        self.view.ask('ID pelicula: ')
+        id_pelicula = input()
+        pelicula = self.model.leer_una_pelicula(id_pelicula)
+        if type(pelicula) == tuple:
+            self.view.mostrar_pelicula_header('Datos de la pelicula'+id_pelicula+' ')
+            self.view.mostrar_pelicula(pelicula)
+            self.view.mostrar_pelicula_midder()
+            self.view.mostrar_pelicula_footer()
+        else:
+            if pelicula == None:
+                self.view.error('LA PELICULA NO EXISTE')
+            else: 
+                self.view.error('PROBLEMA AL LEER LA PELICULA. REVISA.')
+            return  
+        self.view.msg('Ingresa los valores a modificar (vacio para dejarlo igual): ')
+        whole_vals = self.ask_pelicula()
+        fields, vals = self.update_lists(['p_titulo','p_genero','p_descripcion'], whole_vals)
+        vals.append(id_pelicula)
+        vals = tuple(vals)
+        out = self.model.actualizar_pelicula(fields, vals)
+        if out == True:
+             self.view.ok(id_pelicula, 'actualizo')
+        else:
+             self.view.error('NO SE PUDO ACTUALIZAR LA PELICULA. REVISA.')
+        return
+
+    def eliminar_pelicula(self):
+        self.view.ask('ID plicula: ')
+        id_pelicula = input()
+        count = self.model.eliminar_pelicula(id_pelicula)
+        if count != 0:
+               self.view.ok(id_pelicula, 'borro')
+        else: 
+            if count == 0:
+                self.view.error('LA PELICULA NO EXISTE')
+            else:
+                self.view.error('PROBLEMA AL BORRAR LA PELICULA. REVISA.')
+        return
+
+
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     def usuarios_menu(self):
         o = '0'
         while o != '6':

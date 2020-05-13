@@ -149,5 +149,56 @@ class Model:
         except connector.Error as err:
             return(err)
 
+    def crear_pelicula(self, p_titulo, p_genero, p_descripcion):
+            try:
+                sql = 'INSERT INTO peliculas (`p_titulo`, `p_genero`, `p_descripcion`) VALUES (%s, %s, %s)'
+                vals = (p_titulo, p_genero, p_descripcion)
+                self.cursor.execute(sql, vals)
+                self.cnx.commit()
+                id_pelicula = self.cursor.lastrowid
+                return id_pelicula
+            except connector.Error as err:
+                self.cnx.rollback()
+                return(err)
 
+    def leer_una_pelicula(self, id_pelicula):
+        try:
+            sql = 'SELECT * FROM peliculas WHERE id_pelicula = %s'
+            vals = (id_pelicula,)
+            self.cursor.execute(sql, vals)
+            record = self.cursor.fetchone()
+            return record
+        except connector.Error as err:
+            return(err)
+
+    def leer_todas_peliculas(self):
+        try:
+            sql = 'SELECT * FROM peliculas'
+            self.cursor.execute(sql)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return(err)
+
+    def actualizar_pelicula(self, fields, vals):
+        try:
+            sql = 'UPDATE peliculas SET ' + ','.join(fields)+'WHERE id_pelicula = %s'
+            self.cursor.execute(sql, vals)
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            self.cnx.rollback()
+            return(err)
+
+    def eliminar_pelicula(self, id_pelicula):
+        try:
+            sql = 'DELETE FROM peliculas WHERE id_pelicula = %s'
+            vals = (id_pelicula,)
+            self.cursor.execute(sql,vals)
+            self.cnx.commit()
+            count = self.cursor.rowcount
+            return count
+        except connector.Error as err:
+            self.cnx.rollback()
+            return(err)
 

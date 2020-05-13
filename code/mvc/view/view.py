@@ -122,3 +122,54 @@ class View:
     
     def mostrar_usuario_footer(self):
         print('*'*48)
+
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+    def peliculas_menu(self):
+        print('*************************')
+        print('* -- Submenu peliculas  --  *')
+        print('*************************')
+        print('1. Agregar peliculas')
+        print('2. Mostrar peliculas')          
+        print('3. Mostrar todos las peliculas')
+        print('4. Actualizar peliculas')
+        print('5. Borrar peliculas') 
+        print('6. Regresar')
+    
+    def mostrar_pelicula(self, record):
+        print('ID:', record[0])
+        print('Titulo:', record[1])
+        print('Genero:', record[2])
+        print('Descripcion:', record[3])
+    
+    def mostrar_pelicula_header(self, header):
+          print(header.center(48,'*'))
+          print('-'*48)
+
+    def mostrar_pelicula_midder(self):
+        print('-'*48)
+    
+    def mostrar_pelicula_footer(self):
+        print('*'*48)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
