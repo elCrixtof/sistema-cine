@@ -31,7 +31,7 @@ class View:
         print('2. Peliculas')          
         print('3. Usuarios')
         print('4. Funciones')
-        print('5. Comprar Boletos')
+        print('5. Asientos')
         print('6. Registrarse')
         print('7. Salir')
 
@@ -154,14 +154,73 @@ class View:
     def mostrar_pelicula_footer(self):
         print('*'*48)
 
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+    def funciones_menu(self):
+        print('*************************')
+        print('* -- Submenu funciones  --  *')
+        print('*************************')
+        print('1. Agregar funciones')
+        print('2. Mostrar funciones')          
+        print('3. Mostrar todos las funciones')
+        print('4. Actualizar funciones')
+        print('5. Borrar funciones') 
+        print('6. Regresar')
+
+    def mostrar_funcion(self, record):
+        print(f'{record[0]:<12}|{record[1]}|{record[2]:<12}|{record[3]:<12}|{record[4]:<12}')
+     
+    def mostrar_funcion_header(self, header):
+        print(header.center(45,'*'))
+        print('ID Funcion'.ljust(12)+'|'+'Fecha y Hora'.ljust(19)+'|'+'Precio'.ljust(12)+'|'+'ID Pelicula'.ljust(12)+'|'+'ID Sala'.ljust(12))
+        print('-'*45)
+
+    def mostrar_funcion_midder(self):
+        print('-'*45)
+     
+    def mostrar_funcion_footer(self):
+        print('*'*45)
+
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+    def asientos_menu(self):
+        print('*************************')
+        print('* -- Submenu asientos  --  *')
+        print('*************************')
+        print('1. Agregar asiento')
+        print('2. Mostrar asiento')          
+        print('3. Mostrar todos los asientos')
+        print('4. Mostrar todos los asientos por funcion')
+        print('5. Actualizar asiento')
+        print('6. Borrar asiento') 
+        print('7. Regresar')
+
+    def mostrar_asiento(self, record):
+        if (record[2] == 1):
+            estado = 'Ocupado'
+        else:
+            estado = 'Libre'
+        print(f'{record[0]:<10}|{record[1]:<10}|{estado:<10}')
+     
+    def mostrar_asiento_header(self, header):
+        print(header.center(22,'*'))
+        print('ID asiento'.ljust(10)+'|'+'ID funcion'.ljust(10)+'|'+'Estado'.ljust(10))
+        print('-'*22)
+
+    def mostrar_asiento_midder(self):
+        print('-'*22)
+     
+    def mostrar_asiento_footer(self):
+        print('*'*22)
 
 
-
-
-
-
-
-
+#id_asiento
+    #id_funcion
+    #a_estado
 
 
 

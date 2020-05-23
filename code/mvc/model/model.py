@@ -201,4 +201,131 @@ class Model:
         except connector.Error as err:
             self.cnx.rollback()
             return(err)
+ 
 
+    # id_funcion
+    # f_fecha_hora
+    # f_precio
+    # id_pelicula
+    # id_sala
+
+    def crear_funcion(self, f_fecha_hora, f_precio, id_pelicula, id_sala):
+            try:
+                sql = 'INSERT INTO funciones (`f_fecha_hora`,`f_precio`,`id_pelicula`,`id_sala`) VALUES (%s, %s, %s, %s)'
+                vals = (f_fecha_hora, f_precio, id_pelicula, id_sala)
+                self.cursor.execute(sql, vals)
+                self.cnx.commit()
+                id_pelicula = self.cursor.lastrowid
+                return id_pelicula
+            except connector.Error as err:
+                self.cnx.rollback()
+                return(err)
+    
+    def leer_una_funcion(self, id_funcion):
+        try:
+            sql = 'SELECT * FROM funciones WHERE id_funcion = %s'
+            vals = (id_funcion,)
+            self.cursor.execute(sql, vals)
+            record = self.cursor.fetchone()
+            return record
+        except connector.Error as err:
+            return(err)
+    
+    
+    def leer_todas_funciones(self):
+        try:
+            sql = 'SELECT * FROM funciones'
+            self.cursor.execute(sql)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return(err)
+    
+    def actualizar_funcion(self, fields, vals):
+        try:
+            sql = 'UPDATE funciones SET ' + ','.join(fields)+'WHERE id_funcion = %s'
+            self.cursor.execute(sql, vals)
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            self.cnx.rollback()
+            return(err)
+    
+    def eliminar_funcion(self, id_funcion):
+        try:
+            sql = 'DELETE FROM funciones WHERE id_funcion = %s'
+            vals = (id_funcion,)
+            self.cursor.execute(sql,vals)
+            self.cnx.commit()
+            count = self.cursor.rowcount
+            return count
+        except connector.Error as err:
+            self.cnx.rollback()
+            return(err)
+    
+    #id_asiento
+    #id_funcion
+    #a_estado
+    def crear_asiento(self, id_asiento,id_funcion,a_estado):
+            try:
+                sql = 'INSERT INTO asientos (`id_asiento`,`id_funcion`,`a_estado`) VALUES (%s, %s, %s)'
+                vals = (id_asiento,id_funcion,a_estado)
+                self.cursor.execute(sql, vals)
+                self.cnx.commit()
+                id_asiento = self.cursor.lastrowid
+                return id_asiento
+            except connector.Error as err:
+                self.cnx.rollback()
+                return(err)
+
+    def leer_un_asiento(self, id_asiento, id_funcion):
+        try:
+            sql = 'SELECT * FROM asientos WHERE id_asiento = %s and id_funcion = %s' 
+            vals = (id_asiento, id_funcion)
+            self.cursor.execute(sql, vals)
+            record = self.cursor.fetchone()
+            return record
+        except connector.Error as err:
+            return(err)
+    
+    
+    def leer_todos_asientos(self):
+        try:
+            sql = 'SELECT * FROM asientos'
+            self.cursor.execute(sql)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return(err)
+
+    def leer_todos_asientos_funcion(self, id_funcion):
+        try:
+            sql = 'SELECT * FROM asientos WHERE id_funcion = %s'
+            vals = (id_funcion,)
+            self.cursor.execute(sql, vals)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return(err)
+    
+    def actualizar_asiento(self, fields, vals):
+        try:
+            sql = 'UPDATE asientos SET ' + ','.join(fields)+'WHERE id_asiento = %s and id_funcion = %s'
+            self.cursor.execute(sql, vals)
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            self.cnx.rollback()
+            return(err)
+    
+    def eliminar_asiento(self, id_funcion):
+        try:
+            sql = 'DELETE FROM funciones WHERE id_funcion = %s and id_funcion = %s'
+            vals = (id_funcion,)
+            self.cursor.execute(sql,vals)
+            self.cnx.commit()
+            count = self.cursor.rowcount
+            return count
+        except connector.Error as err:
+            self.cnx.rollback()
+            return(err)
