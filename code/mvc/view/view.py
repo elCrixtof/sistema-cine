@@ -233,9 +233,11 @@ class View:
         print('1. Agregar compra')
         print('2. Mostrar compra')          
         print('3. Mostrar todos las compras')
-        print('4. Actualizar compra')
-        print('5. Borrar compra') 
-        print('6. Regresar')
+        print('4. Actualizar Compra')
+        print('5. Eliminar compra')
+        print('6. Agregar boletos a compra')
+        print('7. Quitar boletos a compra')
+        print('8. Regresar')
     
     def mostrar_compra(self, record):
         print('ID:', record[0])
@@ -255,11 +257,11 @@ class View:
 
 
     def mostrar_boleto(self, record):
-        print(f'{record[0]:<15}|{record[1]}|{record[2]:<6}|{record[3]:<15}')
+        print(f'{record[0]:<15}|{record[1]}|{record[2]:<6}|{record[3]:<15}|{record[4]:<15}')
      
     def mostrar_boleto_header(self):
         print('-'*70)
-        print('ID asiento'.ljust(15)+'|'+'Fecha_hora'.ljust(19)+'|'+'Precio'.ljust(6)+'|'+'Funcion'.ljust(15))
+        print('ID Asiento'.ljust(15)+'|'+'Fecha_hora'.ljust(19)+'|'+'Precio'.ljust(6)+'|'+'Funcion'.ljust(15)+'|'+'ID Funcion'.ljust(15))
         print('-'*70)
      
     def mostrar_boleto_footer(self):
