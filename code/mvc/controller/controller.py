@@ -595,9 +595,9 @@ class Controller:
     
     def asientos_menu(self):
         o = '0'
-        while o != '7':
+        while o != '8':
             self.view.asientos_menu()
-            self.view.option('7')
+            self.view.option('8')
             o = input()
             if o == '1':
                 self.crear_asiento()
@@ -608,10 +608,12 @@ class Controller:
             elif o == '4':
                 self.leer_asientos_funcion()
             elif o == '5':
-                self.actualizar_funcion()
+                self.crear_asientos_funcion()
             elif o == '6':
-                self.eliminar_funcion()
+                self.actualizar_asiento()
             elif o == '7':
+                self.eliminar_asiento()
+            elif o == '8':
                 return
             else:
                 self.view.not_valid_option()
@@ -634,6 +636,39 @@ class Controller:
         else:
             self.view.error('NO SE PUDO AGREGAR EL ASIENTO. REVISA.')
         return
+    
+    def crear_asientos_funcion(self):
+        self.view.ask('ID funcion: ')
+        id_funcion = input()
+        funcion = self.model.leer_una_funcion(id_funcion)
+        if type(funcion) == tuple:
+            id_sala = funcion[4]
+            sala = self.model.leer_una_sala(id_sala)
+            n_filas = sala[1]
+            n_asientosf = sala[2]
+            fila = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+            for i in range(n_filas):
+                for k in range(n_asientosf):
+                    id_asiento = fila[i] + str(k)
+                    id_asiento = self.model.crear_asiento(id_asiento, id_funcion, 0)
+                    if type(id_asiento) == int:
+                        self.view.ok(id_asiento, 'agrego')
+                    else:
+                        self.view.error('NO SE PUDO AGREGAR EL ASIENTO. REVISA.')
+                        continue
+        else:
+            if funcion == None:
+                self.view.error('LA FUNCION NO EXISTE')
+            else: 
+                self.view.error('PROBLEMA AL LEER LA FUNCION. REVISA.')
+        return
+
+    # fila = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+    #     for i in range(n_filas):
+    #         for k in range(n_asientosf):
+    #             id_asiento = fila[i] + str(k)
+    #             print(id_asiento, end=' ')
+    #         print('\n')
 
     def leer_un_asiento(self):
         self.view.ask('ID asiento: ')
@@ -679,3 +714,49 @@ class Controller:
                self.view.error('PROBLEMA AL LEER LOS ASIENTOS. REVISA.')
           return
 
+    def actualizar_asiento(self):
+        self.view.ask('ID funcion: ')
+        id_funcion = input()
+        self.view.ask('ID asiento: ')
+        id_asiento = input()
+        asiento = self.model.leer_un_asiento(id_asiento, id_funcion)
+        if type(asiento) == tuple:
+            self.view.mostrar_asiento_header('Datos del asiento'+id_asiento+' ')
+            self.view.mostrar_asiento(asiento)
+            self.view.mostrar_asiento_midder()
+            self.view.mostrar_asiento_footer()
+        else:
+            if asiento == None:
+                self.view.error('EL ASIENTO NO EXISTE')
+            else: 
+                self.view.error('PROBLEMA AL LEER EL ASIENTO. REVISA.')
+            return
+        self.view.msg('Ingresa los valores a modificar (vacio para dejarlo igual): ')
+        self.view.ask('Estado(Ocupado:1 Libre:0): ')
+        estado = input()
+        fields, whole_vals = self.update_lists(['a_estado'], [estado])
+        whole_vals.append(id_asiento)
+        whole_vals.append(id_funcion)
+        out = self.model.actualizar_asiento(fields, whole_vals)
+        if out == True:
+             self.view.ok(id_asiento, 'actualizo')
+        else:
+             self.view.error('NO SE PUDO ACTUALIZAR LA FUNCION. REVISA.')
+        return
+    
+    def eliminar_asiento(self):
+        self.view.ask('ID asiento(A1,B2,etc): ')
+        id_asiento = input()
+        self.view.ask('ID funcion: ')
+        id_funcion = input()
+        count = self.model.eliminar_asiento(id_asiento, id_funcion)
+        if count != 0:
+               self.view.ok(id_asiento, 'borro')
+        else: 
+            if count == 0:
+                self.view.error('EL ASIENTO NO EXISTE')
+            else:
+                self.view.error('PROBLEMA AL BORRAR EL ASIENTO. REVISA.')
+        return
+
+    

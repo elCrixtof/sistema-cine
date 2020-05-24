@@ -318,10 +318,10 @@ class Model:
             self.cnx.rollback()
             return(err)
     
-    def eliminar_asiento(self, id_funcion):
+    def eliminar_asiento(self,  id_asiento, id_funcion):
         try:
-            sql = 'DELETE FROM funciones WHERE id_funcion = %s and id_funcion = %s'
-            vals = (id_funcion,)
+            sql = 'DELETE FROM asientos WHERE id_asiento = %s and id_funcion = %s'
+            vals = (id_asiento, id_funcion)
             self.cursor.execute(sql,vals)
             self.cnx.commit()
             count = self.cursor.rowcount

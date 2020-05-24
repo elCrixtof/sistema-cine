@@ -195,9 +195,10 @@ class View:
         print('2. Mostrar asiento')          
         print('3. Mostrar todos los asientos')
         print('4. Mostrar todos los asientos por funcion')
-        print('5. Actualizar asiento')
-        print('6. Borrar asiento') 
-        print('7. Regresar')
+        print('5. Crear asientos automaticamente por funcion')
+        print('6. Actualizar asiento')
+        print('7. Borrar asiento') 
+        print('8. Regresar')
 
     def mostrar_asiento(self, record):
         if (record[2] == 1):
