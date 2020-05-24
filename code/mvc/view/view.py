@@ -32,7 +32,7 @@ class View:
         print('3. Usuarios')
         print('4. Funciones')
         print('5. Asientos')
-        print('6. Registrarse')
+        print('6. Compras')
         print('7. Salir')
 
     def main2_menu(self):
@@ -218,13 +218,52 @@ class View:
     def mostrar_asiento_footer(self):
         print('*'*22)
 
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
-#id_asiento
-    #id_funcion
-    #a_estado
+    # id_compra
+    # c_total_compra
+    # id_usuario
+
+    def compras_menu(self):
+        print('*************************')
+        print('* -- Submenu compras  --  *')
+        print('*************************')
+        print('1. Agregar compra')
+        print('2. Mostrar compra')          
+        print('3. Mostrar todos las compras')
+        print('4. Actualizar compra')
+        print('5. Borrar compra') 
+        print('6. Regresar')
+    
+    def mostrar_compra(self, record):
+        print('ID:', record[0])
+        print('Total de la compra:', record[1])
+    
+    def mostrar_compra_header(self, header):
+        print(header.center(48,'*'))
+        print('-'*48)
+
+    def mostrar_compra_midder(self):
+        print('-'*48)
+    
+    def mostrar_compra_footer(self):
+        print('*'*48)
 
 
 
+
+    def mostrar_boleto(self, record):
+        print(f'{record[0]:<15}|{record[1]}|{record[2]:<6}|{record[3]:<15}')
+     
+    def mostrar_boleto_header(self):
+        print('-'*70)
+        print('ID asiento'.ljust(15)+'|'+'Fecha_hora'.ljust(19)+'|'+'Precio'.ljust(6)+'|'+'Funcion'.ljust(15))
+        print('-'*70)
+     
+    def mostrar_boleto_footer(self):
+        print('-'*70)
 
 
 

@@ -329,3 +329,129 @@ class Model:
         except connector.Error as err:
             self.cnx.rollback()
             return(err)
+
+    # id_compra
+    # c_total_compra
+    # id_usuario
+
+    
+
+    def crear_compra(self, c_total_compra, id_usuario):
+            try:
+                sql = 'INSERT INTO compras (`c_total_compra`,`id_usuario`) VALUES (%s, %s)'
+                vals = (c_total_compra, id_usuario)
+                self.cursor.execute(sql, vals)
+                self.cnx.commit()
+                id_compra = self.cursor.lastrowid
+                return id_compra
+            except connector.Error as err:
+                self.cnx.rollback()
+                return(err)
+
+    def leer_una_compra(self, id_compra):
+        try:
+            sql = 'SELECT compras.*, usuarios.* FROM compras JOIN usuarios ON usuarios.id_usuario = compras.id_usuario and compras.id_compra = %s'
+            vals = (id_compra,)
+            self.cursor.execute(sql, vals)
+            record = self.cursor.fetchone()
+            return record
+        except connector.Error as err:
+            return(err)
+
+    def leer_todas_compras(self):
+        try:
+            sql = 'SELECT compras.*, usuarios.* FROM compras JOIN usuarios ON usuarios.id_usuario = compras.id_usuario'
+            self.cursor.execute(sql)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return(err)
+
+    def actualizar_compra(self, fields, vals):
+        try:
+            sql = 'UPDATE compras SET ' + ','.join(fields)+'WHERE id_compra = %s'
+            self.cursor.execute(sql, vals)
+            self.cnx.commit()
+            return True
+        except connector.Error as err:
+            self.cnx.rollback()
+            return(err)
+
+    def eliminar_compra(self, id_compra):
+        try:
+            sql = 'DELETE FROM compras WHERE id_compra = %s'
+            vals = (id_compra,)
+            self.cursor.execute(sql,vals)
+            self.cnx.commit()
+            count = self.cursor.rowcount
+            return count
+        except connector.Error as err:
+            self.cnx.rollback()
+            return(err)
+
+    """
+     ************************************
+     *        Metodos Boletos             *
+     ************************************
+     """
+
+    # id_asiento
+    # id_funcion
+    # id_compra
+
+    
+
+    def crear_boleto(self, id_asiento,id_funcion,id_compra):
+          try:
+               sql = 'INSERT INTO boletos (`id_asiento`,`id_funcion`,`id_compra`) VALUES (%s,%s,%s)'
+               vals = (id_asiento,id_funcion,id_compra)
+               self.cursor.execute(sql, vals)
+               self.cnx.commit()
+               return True
+          except connector.Error as err:
+               self.cnx.rollback()
+               return(err)
+
+    def leer_un_boleto(self, id_compra, id_asiento, id_funcion):
+          try:
+               sql = 'SELECT asientos.id_asiento, asientos.id_funcion, asientos.a_estado, funciones.f_precio FROM boletos JOIN asientos ON boletos.id_asiento = asientos.id_asiento and boletos.id_compra = %s and boletos.id_asiento = %s JOIN funciones ON boletos.id_funcion = funciones.id_funcion and boletos.id_funcion = %s'
+               vals = (id_asiento,id_funcion,id_compra)
+               self.cursor.execute(sql, vals)
+               record = self.cursor.fetchone()
+               return record
+          except connector.Error as err:
+               self.cnx.rollback()
+               return(err)
+
+    def leer_todos_boletos(self, id_compra):
+          try:
+               sql = 'SELECT asientos.id_asiento, funciones.f_fecha_hora, funciones.f_precio, peliculas.p_titulo FROM boletos JOIN asientos ON boletos.id_asiento = asientos.id_asiento and boletos.id_funcion = asientos.id_funcion and boletos.id_compra = %s JOIN funciones ON boletos.id_funcion = funciones.id_funcion JOIN peliculas ON funciones.id_pelicula = peliculas.id_pelicula and  funciones.id_funcion = boletos.id_funcion'
+               vals = (id_compra,)
+               self.cursor.execute(sql, vals)
+               record = self.cursor.fetchall()
+               return record
+          except connector.Error as err:
+               self.cnx.rollback()
+               return(err)
+
+    def actualizar_boletos(self, fields, vals):
+          try:
+               sql = 'UPDATE boletos SET ' + ','.join(fields)+'WHERE id_asiento = %s id_compra = %s and id_funcion = %s'
+               self.cursor.execute(sql, vals)
+               self.cnx.commit()
+               return True
+          except connector.Error as err:
+               self.cnx.rollback()
+               return(err) 
+    
+    def eliminar_boleto(self, id_asiento, id_compra, id_funcion):
+          try:
+               sql = 'DELETE FROM boletos WHERE id_asiento = %s id_compra = %s and id_funcion = %s'
+               vals = (id_asiento, id_compra, id_funcion)
+               self.cursor.execute(sql,vals)
+               self.cnx.commit()
+               count = self.cursor.rowcount
+               return count
+          except connector.Error as err:
+               self.cnx.rollback()
+               return(err)

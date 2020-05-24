@@ -11,6 +11,7 @@ class Controller:
     def __init__(self):
         self.model = Model()
         self.view = View()
+        self.id = 0
      
     def start(self):
         self.view.start()
@@ -54,7 +55,7 @@ class Controller:
             elif o == '5':
                 self.asientos_menu()
             elif o == '6':
-                self.view.end()
+                self.compras_menu()
             elif o == '7':
                 self.view.end()
             else:
@@ -105,6 +106,7 @@ class Controller:
         email, password = self.ask_inicio()
         usuario = self.model.leer_usuario_email_password(email, password)
         if type(usuario) == tuple:
+            self.id = usuario[0]
             self.view.mostrar_usuario_header('Datos de tu usuario')
             self.view.mostrar_usuario(usuario)
             self.view.mostrar_usuario_midder()
@@ -119,6 +121,7 @@ class Controller:
             self.main_menu_admin()
         else:
             self.main_menu_usuario()
+        return usuario
 
     def registro_menu(self):
         pass
@@ -584,9 +587,6 @@ class Controller:
                 self.view.error('PROBLEMA AL BORRAR LA FUNCION. REVISA.')
         return
 
-    def venta_boletos(self):
-        pass
-
     """
     ************************************
     *  Controladores Asientos          *
@@ -662,13 +662,6 @@ class Controller:
             else: 
                 self.view.error('PROBLEMA AL LEER LA FUNCION. REVISA.')
         return
-
-    # fila = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-    #     for i in range(n_filas):
-    #         for k in range(n_asientosf):
-    #             id_asiento = fila[i] + str(k)
-    #             print(id_asiento, end=' ')
-    #         print('\n')
 
     def leer_un_asiento(self):
         self.view.ask('ID asiento: ')
@@ -759,4 +752,132 @@ class Controller:
                 self.view.error('PROBLEMA AL BORRAR EL ASIENTO. REVISA.')
         return
 
-    
+    """
+    ************************************
+    *  Controladores Compras           *
+    ************************************
+    """
+
+    def compras_menu(self):
+        o = '0'
+        while o != '6':
+            self.view.compras_menu()
+            self.view.option('6')
+            o = input()
+            if o == '1':
+                self.crear_compra()
+            elif o == '2':
+                self.leer_una_compra()
+            elif o == '3':
+                self.leer_todas_compras()
+            elif o == '4':
+                self.actualizar_compra()
+            elif o == '5':
+                self.eliminar_compra()
+            elif o == '6':
+                return
+            else:
+                self.view.not_valid_option()
+        return
+
+    def crear_compra(self):
+        id_usuario = self.id
+        c_total_compra = 0.0
+        id_compra = self.model.crear_compra(c_total_compra ,id_usuario)
+
+        if type(id_compra) == int:
+            id_asiento = ' '
+            while id_asiento != '':
+                self.view.msg('---- Agrega asientos a la compra (deja vacio el id del asiento para salir) ---')
+                self.view.ask('ID Asiento: ')
+                id_asiento = input()
+                self.view.ask('ID Funcion: ')
+                id_funcion = input()
+                id_asiento, precio = self.crear_boleto(id_asiento, id_funcion, id_compra)
+                c_total_compra += precio
+            self.model.actualizar_compra(('c_total_compra = %s',),(c_total_compra,id_compra))
+        else:
+            self.view.error('NO SE PUDO CREAR LA COMPRA. REVISA')
+        return
+
+    def leer_una_compra(self):
+          self.view.ask('ID compra: ')
+          id_compra = input()
+          compra = self.model.leer_una_compra(id_compra)
+          if type(compra) == tuple:
+               boletos = self.model.leer_todos_boletos(id_compra)
+               if type(boletos) != list and boletos != None:
+                    self.view.error('PROBLEMA AL LEER LA COMPRA. REVISA.')
+               else:
+                    self.view.mostrar_compra_header(' Datos de la Compra '+id_compra+' ')
+                    self.view.mostrar_compra(compra)
+                    self.view.mostrar_boleto_header()
+                    for boleto in boletos:
+                         self.view.mostrar_boleto(boleto)
+                    self.view.mostrar_boleto_header()
+                    self.view.mostrar_compra_footer()
+                    return compra
+          else:
+               if compra == None:
+                    self.view.error('LA COMPRA NO EXISTE')
+               else:
+                    self.view.error('PROBLEMA AL LEER LA COMPRA. REVISA.')
+          return  
+
+    def leer_todas_compras(self):
+        compras = self.model.leer_todas_compras()
+        if type(compras) == list:
+            self.view.mostrar_compra_header(' Todas las compras ')
+            for compra in compras:
+                id_compra = compra[0]
+                boletos = self.model.leer_todos_boletos(id_compra)
+                if type(boletos) != list and boletos != None:
+                        self.view.error('PROBLEMA AL LEER BOLETOS. REVISA.')
+                else:
+                        self.view.mostrar_compra(compra)
+                        self.view.mostrar_boleto_header()
+                        for boleto in boletos:
+                            self.view.mostrar_boleto(boleto)
+                        self.view.mostrar_boleto_footer()
+                        self.view.mostrar_compra_midder()
+                self.view.mostrar_compra_footer()
+        else:
+            self.view.error('PROBLEMA AL LEER LA ORDEN. REVISA.')
+        return
+
+    def actualizar_compra(self):
+        pass
+
+    def eliminar_compra(self):
+        pass
+
+    def crear_boleto(self, id_asiento, id_funcion, id_compra):
+        precio = 0.0
+        if id_asiento != '' and id_funcion != '' and id_compra != '':
+            asiento = self.model.leer_un_asiento(id_asiento, id_funcion)
+
+            if type(asiento) == tuple:
+                self.view.mostrar_asiento_header(' Datos del asiento '+id_asiento+' ')
+                self.view.mostrar_asiento(asiento)
+                self.view.mostrar_asiento_footer()
+                funcion = self.model.leer_una_funcion(id_funcion)
+                precio = funcion[2]
+                out = self.model.crear_boleto(id_asiento, id_funcion, id_compra)
+
+                if out == True:
+                        self.view.ok(asiento[0], 'agrego a la compra')
+                else:
+                    if out.errno == 1062:
+                        self.view.error('EL BOLETO YA ESTA EN LA COMPRA')
+                    else:
+                        self.view.error('NO SE PUDO AGREGAR EL BOLETO. REVISA.')
+                    precio = 0.0
+
+
+
+            else:
+                if asiento == None:
+                    self.view.error('EL ASIENTO NO EXISTE.')
+                else:
+                    self.view.error('PROBLEMA AL LEER EL ASIENTO. REVISA')
+        return id_asiento, precio
