@@ -809,7 +809,7 @@ class Controller:
              self.view.error('NO SE PUDO ACTUALIZAR LA FUNCION. REVISA.')
         return
     
-    def actualizar_asiento_automatico(self, id_asiento, id_funcion):
+    def actualizar_asiento_automatico(self, id_asiento, id_funcion, ocupado):
         asiento = self.model.leer_un_asiento(id_asiento, id_funcion)
         if type(asiento) == tuple:
             self.view.mostrar_asiento_header('Datos del asiento'+id_asiento+' ')
@@ -822,9 +822,7 @@ class Controller:
             else: 
                 self.view.error('PROBLEMA AL LEER EL ASIENTO. REVISA.')
             return
-        self.view.msg('Ingresa los valores a modificar (vacio para dejarlo igual): ')
-        self.view.ask('Estado(Ocupado:1 Libre:0): ')
-        estado = input()
+        estado = ocupado
         fields, whole_vals = self.update_lists(['a_estado'], [estado])
         whole_vals.append(id_asiento)
         whole_vals.append(id_funcion)
@@ -1128,7 +1126,7 @@ class Controller:
                 funcion = self.model.leer_una_funcion(id_funcion)
                 precio = funcion[2]
                 out = self.model.crear_boleto(id_asiento, id_funcion, id_compra)
-                self.actualizar_asiento_automatico(id_asiento, id_funcion)
+                self.actualizar_asiento_automatico(id_asiento, id_funcion, 1)
                 if out == True:
                         self.view.ok(asiento[0], 'agrego a la compra')
                 else:
@@ -1166,21 +1164,18 @@ class Controller:
         id_compra = input()
         compra = self.model.leer_una_compra(id_compra)
         if type(compra) == tuple:
-            id_compra = compra[0]
             c_total_compra = compra[1]
             id_asiento = ' '
             while id_asiento != '':
                 self.view.msg('---- Borra Boletos de la orden (deja vacios los IDs para salir ----')
                 self.view.ask('ID asiento: ')
-                id_asiento = input()
+                id_asiento =  input()
                 self.view.ask('ID funcion: ')
                 id_funcion = input()
-                print(id_asiento, id_funcion, id_compra)
-                print(type(id_asiento), type(id_funcion), type(id_compra))
                 if id_asiento != '' and id_funcion != '':
                         boleto = self.model.leer_un_boleto(id_compra, id_asiento, id_funcion)
                         count = self.model.eliminar_boleto(id_asiento, int(id_funcion), id_compra)
-                        print('Filas afectadas:', count)
+                        self.actualizar_asiento_automatico(id_asiento, id_funcion, 0)
                         if type(boleto) == tuple and count != 0:
                             funcion = self.model.leer_una_funcion(id_funcion)
                             precio = funcion[2]

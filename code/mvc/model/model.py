@@ -479,7 +479,7 @@ class Model:
 
     def leer_un_boleto(self, id_compra, id_asiento, id_funcion):
         try:
-            sql = 'SELECT asientos.id_asiento, asientos.id_funcion, asientos.a_estado, funciones.f_precio FROM boletos JOIN asientos ON boletos.id_asiento = asientos.id_asiento and boletos.id_compra = %s and boletos.id_asiento = %s JOIN funciones ON boletos.id_funcion = funciones.id_funcion and boletos.id_funcion = %s'
+            sql = 'SELECT asientos.id_asiento, asientos.id_funcion, asientos.a_estado, funciones.f_precio FROM boletos JOIN asientos ON boletos.id_asiento = asientos.id_asiento and asientos.id_funcion = boletos.id_funcion and boletos.id_compra = %s and boletos.id_asiento = %s JOIN funciones ON boletos.id_funcion = funciones.id_funcion and boletos.id_funcion = %s '
             vals = (id_compra,id_asiento,id_funcion)
             self.cursor.execute(sql, vals)
             record = self.cursor.fetchone()
