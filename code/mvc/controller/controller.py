@@ -822,7 +822,7 @@ class Controller:
             else: 
                 self.view.error('PROBLEMA AL LEER EL ASIENTO. REVISA.')
             return
-        estado = ocupado
+        estado = str(ocupado)
         fields, whole_vals = self.update_lists(['a_estado'], [estado])
         whole_vals.append(id_asiento)
         whole_vals.append(id_funcion)
@@ -1126,7 +1126,8 @@ class Controller:
                 funcion = self.model.leer_una_funcion(id_funcion)
                 precio = funcion[2]
                 out = self.model.crear_boleto(id_asiento, id_funcion, id_compra)
-                self.actualizar_asiento_automatico(id_asiento, id_funcion, 1)
+                ocupado = 1
+                self.actualizar_asiento_automatico(id_asiento, id_funcion, ocupado)
                 if out == True:
                         self.view.ok(asiento[0], 'agrego a la compra')
                 else:
@@ -1175,7 +1176,8 @@ class Controller:
                 if id_asiento != '' and id_funcion != '':
                         boleto = self.model.leer_un_boleto(id_compra, id_asiento, id_funcion)
                         count = self.model.eliminar_boleto(id_asiento, int(id_funcion), id_compra)
-                        self.actualizar_asiento_automatico(id_asiento, id_funcion, 0)
+                        ocupado = 0
+                        self.actualizar_asiento_automatico(id_asiento, id_funcion, ocupado)
                         if type(boleto) == tuple and count != 0:
                             funcion = self.model.leer_una_funcion(id_funcion)
                             precio = funcion[2]
