@@ -39,9 +39,14 @@ class View:
         print('*************************')
         print('* -- Menu Usuario --  *')
         print('*************************')
-        print('1. Prueba')
-        print('2. Prueba')
-        print('3. Salir') 
+        print('1. Ver todas peliculas')
+        print('2. Ver todas Funciones')
+        print('3. Ver todas Funciones por dia')
+        print('4. Ver todas Funciones por pelicula y dia')
+        print('5. Ver asientos de una funcion')
+        print('6. Comprar Boletos')
+        print('7. Actualizar Cuenta')
+        print('8. Salir') 
 
     def option(self, last):
         print('Selecciona una opcion (1-'+last+'): ', end = '')
@@ -167,7 +172,9 @@ class View:
         print('3. Mostrar todos las funciones')
         print('4. Actualizar funciones')
         print('5. Borrar funciones') 
-        print('6. Regresar')
+        print('6. Leer todas Funciones por dia') 
+        print('7. Leer todas Funciones por dia y por pelicula') 
+        print('8. Regresar')
 
     def mostrar_funcion(self, record):
         print(f'{record[0]:<12}|{record[1]}|{record[2]:<12}|{record[3]:<12}|{record[4]:<12}')
@@ -232,16 +239,27 @@ class View:
         print('*************************')
         print('1. Agregar compra')
         print('2. Mostrar compra')          
-        print('3. Mostrar todos las compras')
+        print('3. Mostrar todas las compras')
         print('4. Actualizar Compra')
         print('5. Eliminar compra')
         print('6. Agregar boletos a compra')
         print('7. Quitar boletos a compra')
         print('8. Regresar')
     
+    def compras_menu_usuario(self):
+        print('*************************')
+        print('* -- Submenu compras  --  *')
+        print('*************************')
+        print('1. Agregar compra')
+        print('2. Mostrar compra')          
+        print('3. Mostrar todas las compras')
+        print('4. Agregar boletos a compra')
+        print('5. Regresar')
+
     def mostrar_compra(self, record):
         print('ID:', record[0])
         print('Total de la compra:', record[1])
+        print('ID Usuario:', record[2])
     
     def mostrar_compra_header(self, header):
         print(header.center(48,'*'))

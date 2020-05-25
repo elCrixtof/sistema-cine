@@ -86,6 +86,12 @@ class Model:
             self.cnx.rollback()
             return(err)
 
+    """
+    ************************************
+    *        Metodos para usuarios     *
+    ************************************
+    """
+
     def crear_usuario(self, u_pnombre, u_apellido, u_email, u_password, u_admi):
         try:
             sql = 'INSERT INTO usuarios (`u_pnombre`, `u_apellido`, `u_email`, `u_password`, `u_admin`) VALUES (%s, %s, %s, %s, %s)'
@@ -149,6 +155,12 @@ class Model:
         except connector.Error as err:
             return(err)
 
+    """
+    ************************************
+    *        Metodos para peliculas        *
+    ************************************
+    """
+
     def crear_pelicula(self, p_titulo, p_genero, p_descripcion):
             try:
                 sql = 'INSERT INTO peliculas (`p_titulo`, `p_genero`, `p_descripcion`) VALUES (%s, %s, %s)'
@@ -202,7 +214,11 @@ class Model:
             self.cnx.rollback()
             return(err)
  
-
+    """
+    ************************************
+    *        Metodos para funciones        *
+    ************************************
+    """
     # id_funcion
     # f_fecha_hora
     # f_precio
@@ -241,6 +257,26 @@ class Model:
         except connector.Error as err:
             return(err)
     
+    def leer_funciones_horario(self, inicio, fin):
+        try:
+            sql = 'SELECT * FROM funciones WHERE f_fecha_hora >= %s and f_fecha_hora <= %s'
+            vals = (inicio,fin)
+            self.cursor.execute(sql, vals)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return(err)
+    
+    def leer_funciones_horario_pelicula(self, inicio, fin, pelicula):
+        try:
+            sql = 'SELECT * FROM funciones WHERE f_fecha_hora >= %s and f_fecha_hora <= %s and id_pelicula = %s'
+            vals = (inicio,fin, pelicula)
+            self.cursor.execute(sql, vals)
+            records = self.cursor.fetchall()
+            return records
+        except connector.Error as err:
+            return(err)
+    
     def actualizar_funcion(self, fields, vals):
         try:
             sql = 'UPDATE funciones SET ' + ','.join(fields)+'WHERE id_funcion = %s'
@@ -263,6 +299,12 @@ class Model:
             self.cnx.rollback()
             return(err)
     
+
+    """
+    ************************************
+    *        Metodos para asientos        *
+    ************************************
+    """
     #id_asiento
     #id_funcion
     #a_estado
@@ -287,7 +329,6 @@ class Model:
             return record
         except connector.Error as err:
             return(err)
-    
     
     def leer_todos_asientos(self):
         try:
@@ -330,11 +371,15 @@ class Model:
             self.cnx.rollback()
             return(err)
 
+    
+    """
+    ************************************
+    *        Metodos para compras        *
+    ************************************
+    """
     # id_compra
     # c_total_compra
     # id_usuario
-
-    
 
     def crear_compra(self, c_total_compra, id_usuario):
             try:

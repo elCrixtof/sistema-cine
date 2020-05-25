@@ -31,7 +31,7 @@ class Controller:
             if o == '1':
                 self.inicio_sesion()
             elif o == '2':
-                self.registro_menu()
+                self.crear_usuario()
             elif o == '3':
                 self.view.end()
             else:
@@ -55,7 +55,7 @@ class Controller:
             elif o == '5':
                 self.asientos_menu()
             elif o == '6':
-                self.compras_menu()
+                self.compras_menu_admin()
             elif o == '7':
                 self.view.end()
             else:
@@ -64,17 +64,25 @@ class Controller:
     
     def main_menu_usuario(self):
         o = '0'
-        while o != '3':
+        while o != '8':
             self.view.main2_menu()
-            self.view.option('3')
+            self.view.option('8')
             o = input()
             if o == '1':
-                # self.inicio_sesion()
-                print('prueba')
+                self.leer_todas_peliculas()
             elif o == '2':
-                # self.registro_menu()
-                print('prueba')
+                self.leer_todas_funciones()
             elif o == '3':
+                self.leer_funciones_dia()
+            elif o == '4':
+                self.leer_funciones_dia_pelicula()
+            elif o == '5':
+                self.leer_asientos_funcion()
+            elif o == '6':
+                self.compras_menu_usuario()
+            elif o == '7':
+                self.actualzar_usuario_usuario()
+            elif o == '8':
                 self.view.end()
             else:
                 self.view.not_valid_option()
@@ -122,9 +130,6 @@ class Controller:
         else:
             self.main_menu_usuario()
         return usuario
-
-    def registro_menu(self):
-        pass
 
     """
     ************************************
@@ -225,7 +230,6 @@ class Controller:
         else:
              self.view.error('NO SE PUDO ACTUALIZAR LA SALA. REVISA.')
         return
-
 
     def eliminar_sala(self):
         self.view.ask('ID sala: ')
@@ -373,7 +377,7 @@ class Controller:
             elif o == '3':
                 self.leer_todos_usuarios()
             elif o == '4':
-                self.actualzar_usuario()
+                self.actualzar_usuario_admin()
             elif o == '5':
                 self.eliminar_usuario()
             elif o == '6':
@@ -431,7 +435,7 @@ class Controller:
             self.view.error('PROBLEMA AL LEER EL USUARIO. REVISA.')
         return
     
-    def actualzar_usuario(self):
+    def actualzar_usuario_admin(self):
         self.view.ask('ID usuario: ')
         id_usuario = input()
         usuario = self.model.leer_un_usuario(id_usuario)
@@ -448,7 +452,36 @@ class Controller:
             return
         self.view.msg('Ingresa los valores a modificar (vacio para dejarlo igual): ')
         whole_vals = self.ask_usuario()
+        self.view.ask('Tipo(Admin:1 Mortal:0): ')
+        u_admin = input()
+        whole_vals.append(u_admin)
         fields, vals = self.update_lists(['u_pnombre','u_apellido','u_email','u_password','u_admin'], whole_vals)
+        vals.append(id_usuario)
+        vals = tuple(vals)
+        out = self.model.actualizar_usuario(fields, vals)
+        if out == True:
+             self.view.ok(id_usuario, 'actualizo')
+        else:
+             self.view.error('NO SE PUDO ACTUALIZAR EL USUARIO. REVISA.')
+        return
+    
+    def actualzar_usuario_usuario(self):
+        id_usuario = self.id
+        usuario = self.model.leer_un_usuario(id_usuario)
+        if type(usuario) == tuple:
+            self.view.mostrar_usuario_header('Datos del usuario'+id_usuario+' ')
+            self.view.mostrar_usuario(usuario)
+            self.view.mostrar_usuario_midder()
+            self.view.mostrar_usuario_footer()
+        else:
+            if usuario == None:
+                self.view.error('EL USUARIO NO EXISTE')
+            else: 
+                self.view.error('PROBLEMA AL LEER EL USUARIO. REVISA.')
+            return
+        self.view.msg('Ingresa los valores a modificar (vacio para dejarlo igual): ')
+        whole_vals = self.ask_usuario()
+        fields, vals = self.update_lists(['u_pnombre','u_apellido','u_email','u_password'], whole_vals)
         vals.append(id_usuario)
         vals = tuple(vals)
         out = self.model.actualizar_usuario(fields, vals)
@@ -479,9 +512,9 @@ class Controller:
 
     def funciones_menu(self):
         o = '0'
-        while o != '6':
+        while o != '8':
             self.view.funciones_menu()
-            self.view.option('6')
+            self.view.option('8')
             o = input()
             if o == '1':
                 self.crear_funcion()
@@ -494,6 +527,10 @@ class Controller:
             elif o == '5':
                 self.eliminar_funcion()
             elif o == '6':
+                self.leer_funciones_dia()
+            elif o == '7':
+                self.leer_funciones_dia_pelicula()
+            elif o == '8':
                 return
             else:
                 self.view.not_valid_option()
@@ -547,6 +584,41 @@ class Controller:
             self.view.error('PROBLEMA AL LEER LA FUNCION. REVISA.')
         return
 
+    def leer_funciones_dia(self):
+        self.view.ask('Dia(AAAA-MM-DD): ')
+        dia = input()
+        inicio = dia + ' 00:00:00'
+        fin = dia + ' 23:59:59' 
+        funciones = self.model.leer_funciones_horario(inicio, fin)
+        if type(funciones) == list:
+            self.view.mostrar_funcion_header(' Datos de todas las funciones del dia ' + dia)
+            for funcion in funciones:
+                self.view.mostrar_funcion(funcion)
+                self.view.mostrar_funcion_midder()
+            self.view.mostrar_funcion_footer()
+        else:
+            self.view.error('PROBLEMA AL LEER LA FUNCION. REVISA.')
+        return
+
+    def leer_funciones_dia_pelicula(self):
+        self.view.ask('ID pelicula: ')
+        id_pelicula = input()
+        self.view.ask('Dia(AAAA-MM-DD): ')
+        dia = input()
+        self.view.ask('Pelicula')
+        inicio = dia + ' 00:00:00'
+        fin = dia + ' 23:59:59' 
+        funciones = self.model.leer_funciones_horario_pelicula(inicio, fin, id_pelicula)
+        if type(funciones) == list:
+            self.view.mostrar_funcion_header(' Datos de todas las funciones del dia ' + dia)
+            for funcion in funciones:
+                self.view.mostrar_funcion(funcion)
+                self.view.mostrar_funcion_midder()
+            self.view.mostrar_funcion_footer()
+        else:
+            self.view.error('PROBLEMA AL LEER LA FUNCION. REVISA.')
+        return
+
     def actualizar_funcion(self):
         self.view.ask('ID funcion: ')
         id_funcion = input()
@@ -592,7 +664,7 @@ class Controller:
     *  Controladores Asientos          *
     ************************************
     """
-    
+
     def asientos_menu(self):
         o = '0'
         while o != '8':
@@ -785,6 +857,29 @@ class Controller:
     """
 
     def compras_menu(self):
+        pass
+
+    def compras_menu_usuario(self):
+        o = '0'
+        while o != '5':
+            self.view.compras_menu_usuario()
+            self.view.option('5')
+            o = input()
+            if o == '1':
+                self.crear_compra_usuario()
+            elif o == '2':
+                self.leer_una_compra_usuario()
+            elif o == '3':
+                self.leer_todas_compras_usuario()
+            elif o == '4':
+                self.sumar_boletos_compra_usuario()
+            elif o == '5':
+                return
+            else:
+                self.view.not_valid_option()
+        return
+    
+    def compras_menu_admin(self):
         o = '0'
         while o != '8':
             self.view.compras_menu()
@@ -793,25 +888,26 @@ class Controller:
             if o == '1':
                 self.crear_compra()
             elif o == '2':
-                self.leer_una_compra_usuario()
+                self.leer_una_compra()
             elif o == '3':
-                self.leer_todas_compras_usuario()
+                self.leer_todas_compras()
             elif o == '4':
-                self.actualizar_compra_usuario()
+                self.actualizar_compra()
             elif o == '5':
                 self.eliminar_compra()
             elif o == '6':
                 self.sumar_boletos_compra()
             elif o == '7':
                 self.eliminar_boletos_compra()
-            elif o == '6':
+            elif o == '8':
                 return
             else:
                 self.view.not_valid_option()
         return
 
     def crear_compra(self):
-        id_usuario = self.id
+        self.view.ask('ID Usuario: ')
+        id_usuario = input()
         c_total_compra = 0.0
         id_compra = self.model.crear_compra(c_total_compra ,id_usuario)
 
@@ -854,6 +950,92 @@ class Controller:
                     self.view.error('PROBLEMA AL LEER LA COMPRA. REVISA.')
           return  
 
+    def leer_todas_compras(self):
+        compras = self.model.leer_todas_compras()
+        if type(compras) == list:
+            self.view.mostrar_compra_header(' Todas las compras ')
+            for compra in compras:
+                id_compra = compra[0]
+                boletos = self.model.leer_todos_boletos(id_compra)
+                if type(boletos) != list and boletos != None:
+                        self.view.error('PROBLEMA AL LEER BOLETOS. REVISA.')
+                else:
+                        self.view.mostrar_compra(compra)
+                        self.view.mostrar_boleto_header()
+                        for boleto in boletos:
+                            self.view.mostrar_boleto(boleto)
+                        self.view.mostrar_boleto_footer()
+                        self.view.mostrar_compra_midder()
+                self.view.mostrar_compra_footer()
+        else:
+            self.view.error('PROBLEMA AL LEER LA ORDEN. REVISA.')
+        return
+
+    def actualizar_compra(self):
+        self.view.ask('ID compra a modificar: ')
+        id_compra = input()
+        compra = self.model.leer_una_compra(id_compra)
+        if type(compra) == tuple:
+            self.view.mostrar_compra_header( 'Datos de la compra '+id_compra+' ')
+            self.view.mostrar_compra(compra)
+            self.view.mostrar_compra_footer()
+        else:
+            if compra == None:
+                self.view.error('LA ORDEN NO EXISTE')
+            else:
+                self.view.error('PROBLEMA AL LEER LA ORDEN. REVISA')
+            return
+        self.view.msg('Ingresa los valores a modificar (vacio para dejarlo igual): ')
+        self.view.ask('ID usuario: ')
+        id_usuario = input()
+        self.view.ask('Total Compra: ')
+        c_total_compra = input()
+        whole_vals = [id_usuario, c_total_compra]
+        fields, vals = self.update_lists(['id_usuario', 'c_total_compra'], whole_vals)
+        vals.append(id_compra)
+        vals = tuple(vals)
+        out = self.model.actualizar_compra(fields, vals)
+        if out == True:
+            self.view.ok(id_compra, 'actualizo')
+        else:
+            self.view.error('NO SE PUDO ACTUALIZAR LA ORDEN. REVISA.')
+        return
+
+    def eliminar_compra(self):
+          self.view.ask('Id de compra a borrar: ')
+          id_compra = input()
+          count = self.model.eliminar_compra(id_compra)
+          if count != 0:
+               self.view.ok(id_compra, 'borro')
+          else: 
+               if count == 0:
+                    self.view.error('LA COMPRA NO EXISTE')
+               else:
+                    self.view.error('PROBLEMA AL BORRAR LA COMPRA. REVISA')
+          return
+
+    # ***************** Compras Usuario ***********************
+
+    def crear_compra_usuario(self):
+        id_usuario = self.id
+        c_total_compra = 0.0
+        id_compra = self.model.crear_compra(c_total_compra ,id_usuario)
+
+        if type(id_compra) == int:
+            id_asiento = ' '
+            while id_asiento != '':
+                self.view.msg('---- Agrega asientos a la compra (deja vacio el id del asiento para salir) ---')
+                self.view.ask('ID Asiento: ')
+                id_asiento = input()
+                self.view.ask('ID Funcion: ')
+                id_funcion = input()
+                precio = self.crear_boleto(id_asiento, id_funcion, id_compra)
+                c_total_compra += precio
+            self.model.actualizar_compra(('c_total_compra = %s',),(c_total_compra,id_compra))
+        else:
+            self.view.error('NO SE PUDO CREAR LA COMPRA. REVISA')
+        return
+
     def leer_una_compra_usuario(self):
         self.view.ask('ID compra: ')
         id_compra = input()
@@ -876,28 +1058,7 @@ class Controller:
                 self.view.error('LA COMPRA NO EXISTE')
             else:
                 self.view.error('PROBLEMA AL LEER LA COMPRA. REVISA.')
-        return  
-
-    def leer_todas_compras(self):
-        compras = self.model.leer_todas_compras()
-        if type(compras) == list:
-            self.view.mostrar_compra_header(' Todas las compras ')
-            for compra in compras:
-                id_compra = compra[0]
-                boletos = self.model.leer_todos_boletos(id_compra)
-                if type(boletos) != list and boletos != None:
-                        self.view.error('PROBLEMA AL LEER BOLETOS. REVISA.')
-                else:
-                        self.view.mostrar_compra(compra)
-                        self.view.mostrar_boleto_header()
-                        for boleto in boletos:
-                            self.view.mostrar_boleto(boleto)
-                        self.view.mostrar_boleto_footer()
-                        self.view.mostrar_compra_midder()
-                self.view.mostrar_compra_footer()
-        else:
-            self.view.error('PROBLEMA AL LEER LA ORDEN. REVISA.')
-        return
+        return 
 
     def leer_todas_compras_usuario(self):
         compras = self.model.leer_todas_compras_usuario(self.id)
@@ -918,34 +1079,6 @@ class Controller:
                 self.view.mostrar_compra_footer()
         else:
             self.view.error('PROBLEMA AL LEER LA ORDEN. REVISA.')
-        return
-
-    def actualizar_compra(self):
-        self.view.ask('ID compra a modificar: ')
-        id_compra = input()
-        compra = self.model.leer_una_compra_usuario(id_compra, self.id)
-        if type(compra) == tuple:
-            self.view.mostrar_compra_header( 'Datos de la compra '+id_compra+' ')
-            self.view.mostrar_compra(compra)
-            self.view.mostrar_compra_footer()
-        else:
-            if compra == None:
-                self.view.error('LA ORDEN NO EXISTE')
-            else:
-                self.view.error('PROBLEMA AL LEER LA ORDEN. REVISA')
-            return
-        self.view.msg('Ingresa los valores a modificar (vacio para dejarlo igual): ')
-        self.view.ask('ID usuario: ')
-        id_usuario = input()
-        whole_vals = [id_usuario]
-        fields, vals = self.update_lists(['id_usuario'], whole_vals)
-        vals.append(id_compra)
-        vals = tuple(vals)
-        out = self.model.actualizar_compra(fields, vals)
-        if out == True:
-            self.view.ok(id_compra, 'actualizo')
-        else:
-            self.view.error('NO SE PUDO ACTUALIZAR LA ORDEN. REVISA.')
         return
 
     def actualizar_compra_usuario(self):
@@ -975,18 +1108,6 @@ class Controller:
             self.view.error('NO SE PUDO ACTUALIZAR LA ORDEN. REVISA.')
         return
 
-    def eliminar_compra(self):
-          self.view.ask('Id de compra a borrar: ')
-          id_compra = input()
-          count = self.model.eliminar_compra(id_compra)
-          if count != 0:
-               self.view.ok(id_compra, 'borro')
-          else: 
-               if count == 0:
-                    self.view.error('LA COMPRA NO EXISTE')
-               else:
-                    self.view.error('PROBLEMA AL BORRAR LA COMPRA. REVISA')
-          return
 
     """
     ************************************
@@ -1024,7 +1145,7 @@ class Controller:
         return precio
         
     def sumar_boletos_compra(self):
-        compra = self.leer_una_compra_usuario()
+        compra = self.leer_una_compra()
         if type(compra) == tuple:
             id_compra = compra[0]
             c_total_compra = compra[1]
@@ -1073,18 +1194,20 @@ class Controller:
             self.model.actualizar_compra(('c_total_compra = %s',), (c_total_compra, id_compra))
         return
 
-    def eliminar_boleto_2(self):
-          self.view.ask('Id de boleto a borrar: ')
-          id_boleto = input()
-          count = self.model.eliminar_compra(id_boleto)
-          if count != 0:
-               self.view.ok(id_boleto, 'borro')
-          else: 
-               if count == 0:
-                    self.view.error('LA COMPRA NO EXISTE')
-               else:
-                    self.view.error('PROBLEMA AL BORRAR LA COMPRA. REVISA')
-          return
-
-
+    def sumar_boletos_compra_usuario(self):
+        compra = self.leer_una_compra_usuario()
+        if type(compra) == tuple:
+            id_compra = compra[0]
+            c_total_compra = compra[1]
+            id_asiento = ' '
+            while id_asiento != '':
+                self.view.msg('---- Agrega asientos a la compra (deja vacios los IDs para salir ----')
+                self.view.ask('ID Asiento: ')
+                id_asiento = input()
+                self.view.ask('ID Funcion: ')
+                id_funcion = input()
+                precio = self.crear_boleto(id_asiento, id_funcion, id_compra)
+                c_total_compra += precio
+            self.model.actualizar_compra(('c_total_compra = %s',),(c_total_compra, id_compra))
+        return
 
